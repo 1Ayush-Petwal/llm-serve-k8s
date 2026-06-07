@@ -14,7 +14,7 @@ with an identical client** — all for **$0**, locally, on `kind`, using the
 
 ---
 
-## 1. Prerequisites: 
+## 1. Prerequisites
 
 This is the part most people get wrong by reflex. Stated plainly:
 

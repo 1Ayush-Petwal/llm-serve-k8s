@@ -7,7 +7,9 @@
 
 set -euo pipefail
 
-LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve this file's dir under bash (BASH_SOURCE) or zsh ($0 when sourced).
+if [ -n "${BASH_SOURCE:-}" ]; then _LIB_SELF="${BASH_SOURCE[0]}"; else _LIB_SELF="$0"; fi
+LIB_DIR="$(cd "$(dirname "$_LIB_SELF")" && pwd)"
 ROOT="$(cd "$LIB_DIR/.." && pwd)"
 
 # ---- Pinned upstream versions (verified live; bump deliberately) ------------
