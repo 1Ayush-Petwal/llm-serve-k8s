@@ -6,6 +6,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: inference-gateway
+  annotations:
+    # kind has no cloud load-balancer, so a LoadBalancer Service stays
+    # <pending> forever and the Gateway never goes Programmed. Tell Istio to
+    # back this Gateway with a ClusterIP Service instead — it always gets an
+    # address (so Programmed=True), and we reach it via port-forward anyway.
+    networking.istio.io/service-type: ClusterIP
 spec:
   gatewayClassName: istio
   listeners:
