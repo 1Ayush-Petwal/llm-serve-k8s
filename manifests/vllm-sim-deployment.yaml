@@ -1,0 +1,51 @@
+# vLLM backend — emulated by the llm-d inference simulator (no GPU, no weights).
+# The pods carry app=llama3-8b, which is the label the InferencePool selects on.
+# engine-type=vllm is purely informational (and handy in metrics/labels).
+#
+# Rendered by scripts/03-deploy-backend.sh via envsubst so MODEL_NAME / image /
+# label stay in one place (scripts/lib.sh).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-${POOL_LABEL_APP}
+  labels:
+    app: ${POOL_LABEL_APP}
+    inference.networking.k8s.io/engine-type: vllm
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ${POOL_LABEL_APP}
+      inference.networking.k8s.io/engine-type: vllm
+  template:
+    metadata:
+      labels:
+        app: ${POOL_LABEL_APP}
+        inference.networking.k8s.io/engine-type: vllm
+    spec:
+      containers:
+        - name: vllm-sim
+          image: ${SIM_IMAGE}
+          imagePullPolicy: IfNotPresent
+          args:
+            - --model
+            - ${MODEL_NAME}
+            - --port
+            - "8000"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi

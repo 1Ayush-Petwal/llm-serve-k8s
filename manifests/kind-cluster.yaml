@@ -1,0 +1,8 @@
+# kind cluster for the LLM-serving PoC.
+# Single control-plane node is plenty — the inference simulator is tiny
+# (cpu request 10m, no GPU, no weights).
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: llm-serve
+nodes:
+  - role: control-plane

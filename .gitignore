@@ -1,0 +1,13 @@
+# Local istioctl download (bootstrapped by scripts/02-install-gateway.sh)
+.istio/
+
+# kube / helm scratch
+*.kubeconfig
+kubeconfig
+
+# captured metric dumps / screenshots scratch (keep curated ones under docs/)
+*.tmp
+*.log
+
+# OS noise
+.DS_Store

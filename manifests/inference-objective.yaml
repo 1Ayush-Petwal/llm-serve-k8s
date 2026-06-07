@@ -1,0 +1,13 @@
+# InferenceObjective expresses a serving objective (priority/criticality) that
+# the Endpoint-Picker uses when making routing decisions for the pool. This is
+# the same CRD/operator muscle as a Kubeflow SparkCluster objective, pointed at
+# LLM serving.
+apiVersion: inference.networking.x-k8s.io/v1alpha2
+kind: InferenceObjective
+metadata:
+  name: default-objective
+spec:
+  priority: 1
+  poolRef:
+    group: inference.networking.k8s.io
+    name: ${POOL_NAME}

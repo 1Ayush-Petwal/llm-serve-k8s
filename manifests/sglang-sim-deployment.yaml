@@ -1,0 +1,58 @@
+# SGLang backend — the swap target.
+#
+# IMPORTANT (honesty for the README): upstream ships no SGLang *simulator*, only
+# a GPU deployment. For the $0 PoC we reuse the SAME llm-d inference-sim image
+# but label it engine-type=sglang. This proves the Kubernetes-level claim — that
+# swapping the serving engine is a server-side Deployment change with an
+# IDENTICAL client — because both engines expose the same OpenAI-compatible API.
+# It does NOT emulate SGLang's runtime (RadixAttention etc.); that's the Phase-2
+# GPU benchmark. See README "vLLM vs SGLang".
+#
+# Pods carry the SAME app=llama3-8b label, so the existing InferencePool, EPP,
+# HTTPRoute and Gateway pick them up with zero changes. Scale vLLM to 0 for a
+# clean swap, or leave both up for an A/B (model-aware routing) demo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sglang-${POOL_LABEL_APP}
+  labels:
+    app: ${POOL_LABEL_APP}
+    inference.networking.k8s.io/engine-type: sglang
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ${POOL_LABEL_APP}
+      inference.networking.k8s.io/engine-type: sglang
+  template:
+    metadata:
+      labels:
+        app: ${POOL_LABEL_APP}
+        inference.networking.k8s.io/engine-type: sglang
+    spec:
+      containers:
+        - name: sglang-sim
+          image: ${SIM_IMAGE}
+          imagePullPolicy: IfNotPresent
+          args:
+            - --model
+            - ${MODEL_NAME}
+            - --port
+            - "8000"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
