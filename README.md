@@ -9,19 +9,17 @@ with an identical client**.
 Runs **entirely locally for $0**: a `kind` cluster + the `llm-d` inference
 **simulator** (no GPU, no model weights, no cloud, no API keys, no database).
 
-<div align="center">
+## Demo Video: 
 
-### 📹 Watch the 2-minute demo
+**📹 Demo (2 min):** **[Watch the walkthrough on Loom →](https://www.loom.com/share/0531f832b655444184cb7494fd956246)**
 
-<a href="https://www.loom.com/share/0531f832b655444184cb7494fd956246">
-  <img src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%202--min%20Demo-Loom-625DF5?style=for-the-badge&logo=loom&logoColor=white" alt="Watch the walkthrough on Loom" height="44" />
-</a>
+
 
 `make up → swap → ab → metrics` end-to-end — a 200 through the gateway, the
 vLLM→SGLang swap with an unchanged client, the mixed-engine A/B split, and live
 Prometheus metrics.
 
-</div>
+
 
 > **Status:** MVP complete — phases 0–6 plus both stretch goals (vLLM→SGLang swap,
 > mixed-engine A/B) built and **verified live on `kind`**; captured artifacts are
